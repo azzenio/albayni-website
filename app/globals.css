@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-heading: "Alexandria";
+  --font-body: "IBM Plex Sans Arabic";
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  @apply bg-paper text-body font-body antialiased;
+}
+
+h1, h2, h3, h4 {
+  @apply font-heading text-ink;
+}
+
+::selection { background: #b0662c33; }
+
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; }
+}
+
+@keyframes draw { to { stroke-dashoffset: 0; } }
+.map-line {
+  stroke-dasharray: 240;
+  stroke-dashoffset: 240;
+  animation: draw 1.4s ease forwards;
+}
+.map-node { opacity: 0; animation: fadeIn 0.6s ease forwards; }
+@keyframes fadeIn { to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .map-line { stroke-dashoffset: 0; animation: none; }
+  .map-node { opacity: 1; animation: none; }
+}
+
+:focus-visible {
+  outline: 2px solid #b0662c;
+  outline-offset: 3px;
+  border-radius: 4px;
+}

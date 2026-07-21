@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="رمز البيني">
+  <title>رمز البيني — مساران يتقاطعان فتولد بينهما مساحة ثالثة، ونقطة الباء أسفلها</title>
+  <path d="M 44 12 C 82 36, 82 70, 44 94" fill="none" stroke="#1C2430" stroke-width="9" stroke-linecap="round"/>
+  <path d="M 76 12 C 38 36, 38 70, 76 94" fill="none" stroke="#1C2430" stroke-width="9" stroke-linecap="round"/>
+  <path d="M 60 31 C 70.5 44, 70.5 60, 60 73 C 49.5 60, 49.5 44, 60 31 Z" fill="#B0662C"/>
+  <circle cx="60" cy="107" r="6.5" fill="#B0662C"/>
+</svg>

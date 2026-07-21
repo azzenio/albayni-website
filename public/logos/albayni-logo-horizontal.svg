@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 120" role="img" aria-label="شعار البيني — أفقي">
+  <title>شعار البيني — أفقي</title>
+  <g>
+    <path d="M 358 12 C 396 36, 396 70, 358 94" fill="none" stroke="#1C2430" stroke-width="9" stroke-linecap="round"/>
+    <path d="M 390 12 C 352 36, 352 70, 390 94" fill="none" stroke="#1C2430" stroke-width="9" stroke-linecap="round"/>
+    <path d="M 374 31 C 384.5 44, 384.5 60, 374 73 C 363.5 60, 363.5 44, 374 31 Z" fill="#B0662C"/>
+    <circle cx="374" cy="107" r="6.5" fill="#B0662C"/>
+  </g>
+  <text x="165" y="80" text-anchor="middle" font-family="Alexandria, 'IBM Plex Sans Arabic', 'Noto Sans Arabic', sans-serif" font-weight="700" font-size="62" fill="#1C2430">البيني</text>
+</svg>
