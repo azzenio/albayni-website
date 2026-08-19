@@ -30,6 +30,7 @@ export default function KnowledgeMap() {
 
       <Reveal delay={160}>
         <h3 className="mt-8 text-sm font-semibold text-copper-deep">{knowledgeMap.levelsTitle}</h3>
+        <p className="mt-1.5 text-sm text-body/70">{knowledgeMap.levelsNote}</p>
         <ol className="mt-4 grid gap-3 md:grid-cols-4">
           {knowledgeMap.levels.map((l, i) => (
             <li key={l.name} className="rounded-card border border-line bg-paper p-4">
@@ -37,6 +38,9 @@ export default function KnowledgeMap() {
               <p className="mt-1 font-semibold text-ink">{l.name}</p>
               <p className="mt-1 text-sm text-body/75">{l.desc}</p>
               <p className="mt-3 border-t border-line pt-2 text-sm text-copper-deep">{l.example}</p>
+              {"pending" in l && (
+                <p className="mt-1 text-xs text-body/60">مثال توضيحي</p>
+              )}
             </li>
           ))}
         </ol>

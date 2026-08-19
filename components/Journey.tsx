@@ -12,7 +12,7 @@ export default function Journey() {
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1.15fr_1fr]">
         <Reveal delay={80}>
-          <ol className="space-y-3">
+          <ol className="list-none space-y-3 p-0">
             {journey.steps.map((s, i) => (
               <li key={s} className="flex items-start gap-3.5">
                 <span

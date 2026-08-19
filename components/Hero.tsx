@@ -1,5 +1,5 @@
 import { hero, site } from "@/content/site";
-import FrameVisual from "./FrameVisual";
+import CoreVisual from "./CoreVisual";
 
 export default function Hero() {
   return (
@@ -21,7 +21,7 @@ export default function Hero() {
           </div>
         </div>
         <div className="flex justify-center">
-          <FrameVisual />
+          <CoreVisual />
         </div>
       </div>
     </section>

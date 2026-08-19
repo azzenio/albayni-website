@@ -58,3 +58,28 @@ h1, h2, h3, h4 {
   outline-offset: 3px;
   border-radius: 4px;
 }
+
+/* الرسم الرئيسي: رسم الأقواس وظهور النواة */
+@keyframes arcDraw {
+  from { stroke-dashoffset: 620; }
+  to { stroke-dashoffset: 0; }
+}
+.arc-draw {
+  stroke-dasharray: 620;
+  stroke-dashoffset: 620;
+  animation: arcDraw 1.5s ease forwards;
+}
+@keyframes coreIn {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: none; }
+}
+.core-in {
+  opacity: 0;
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: coreIn 0.7s ease forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .arc-draw { stroke-dashoffset: 0; animation: none; }
+  .core-in { opacity: 1; transform: none; animation: none; }
+}

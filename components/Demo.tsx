@@ -11,6 +11,7 @@ const phaseOrder: Phase[] = ["understand", "frame", "blind", "study"];
 /**
  * نموذج توضيحي محاكي بالكامل ببيانات ثابتة — لا يعمل خلفه النظام الفعلي.
  * الاختيار من الأمثلة المعتمدة فقط؛ لا إدخال حر حتى لا يوهم بخدمة عاملة.
+ * طبقة الموضوعات لم تُربط بعد، لذا لا يُعرض موضوع داخل بطاقات الإطار البيني.
  */
 export default function Demo() {
   const [example, setExample] = useState<DemoExample>(demoExamples[0]);
@@ -84,15 +85,17 @@ export default function Demo() {
           </div>
         </fieldset>
 
-        <div className="mt-5 flex flex-wrap items-center gap-4">
+        <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
           <button
             onClick={run}
             disabled={phase === "running"}
             className="rounded-full bg-copper px-8 py-3 font-medium text-paper transition-colors hover:bg-copper-deep disabled:opacity-60"
           >
-            {phase === "running" ? "جارٍ العرض التوضيحي…" : "ابنِ الإطار البيني"}
+            {phase === "running" ? "جارٍ العرض التوضيحي…" : "اعرض الإطار البيني"}
           </button>
-          <span className="text-sm text-body/60">التخصص المُدخَل: {example.entry}</span>
+          <span className="text-sm text-body/70">
+            المنطلق الظاهر للمسألة: <span className="font-medium text-ink">{example.origin}</span>
+          </span>
         </div>
 
         <div aria-live="polite">
@@ -101,13 +104,14 @@ export default function Demo() {
               <span className="h-2 w-2 animate-pulse rounded-full bg-copper" aria-hidden="true" />
               <span className="h-2 w-2 animate-pulse rounded-full bg-copper [animation-delay:150ms]" aria-hidden="true" />
               <span className="h-2 w-2 animate-pulse rounded-full bg-copper [animation-delay:300ms]" aria-hidden="true" />
-              <span>يُقرأ نص المسألة وتُستخرج المفاهيم…</span>
+              <span>يُقرأ نص المسألة…</span>
             </div>
           )}
 
+          {/* ١ — مفاهيم أولية */}
           {reached("understand") && (
             <div className="mt-8">
-              <h3 className="text-sm font-semibold text-copper-deep">١ — فهم المسألة</h3>
+              <h3 className="text-sm font-semibold text-copper-deep">١ — مفاهيم أولية مستخرجة من المسألة</h3>
               <ul className="mt-3 flex flex-wrap gap-2">
                 {example.concepts.map((c) => (
                   <li key={c} className="rounded-full bg-sand px-4 py-1.5 text-sm text-ink">
@@ -118,27 +122,47 @@ export default function Demo() {
             </div>
           )}
 
+          {/* ٢ — الإطار البيني: المسارات المعرفية */}
           {reached("frame") && (
             <div className="mt-8">
-              <h3 className="text-sm font-semibold text-copper-deep">٢ — الإطار البيني: الركائز المنتقاة</h3>
+              <h3 className="text-sm font-semibold text-copper-deep">٢ — الإطار البيني: المسارات المعرفية المنتقاة</h3>
               <div className="mt-3 grid gap-3 md:grid-cols-2">
-                {example.pillars.map((p) => (
-                  <div key={p.name} className="rounded-xl border border-line bg-paper p-4">
-                    <div className="flex flex-wrap items-baseline gap-2">
-                      <span className="font-semibold text-ink">{p.name}</span>
-                      {p.field && <span className="text-xs text-body/55">← {p.field}</span>}
-                    </div>
-                    <p className="mt-1.5 text-sm leading-relaxed text-body/80">{p.reason}</p>
+                {example.paths.map((p) => (
+                  <div key={`${p.pillar}-${p.subfield}`} className="rounded-xl border border-line bg-paper p-4">
+                    <dl className="space-y-1.5 text-sm">
+                      <div className="flex gap-2">
+                        <dt className="w-24 shrink-0 text-body/55">الركيزة المعرفية</dt>
+                        <dd className="font-semibold text-ink">{p.pillar}</dd>
+                      </div>
+                      <div className="flex gap-2">
+                        <dt className="w-24 shrink-0 text-body/55">الحقل المعرفي</dt>
+                        <dd className="text-ink">{p.field}</dd>
+                      </div>
+                      <div className="flex gap-2">
+                        <dt className="w-24 shrink-0 text-body/55">الحقل الفرعي</dt>
+                        <dd className="text-copper-deep">{p.subfield}</dd>
+                      </div>
+                    </dl>
+                    <p className="mt-3 border-t border-line pt-2.5 text-sm leading-relaxed text-body/80">
+                      {p.reason}
+                    </p>
                   </div>
                 ))}
               </div>
+              <p className="mt-4 text-sm text-body/65">
+                تتوقف المسارات عند مستوى الحقل الفرعي في هذا النموذج، لأن طبقة الموضوعات لم تُربط بعد بالمصدر
+                الأكاديمي.
+              </p>
             </div>
           )}
 
+          {/* ٣ — النقاط العمياء */}
           {reached("blind") && (
             <div className="mt-8 rounded-xl border-r-4 border-copper bg-ink p-5 md:p-6">
               <h3 className="font-heading text-lg font-bold text-paper">٣ — النقاط العمياء</h3>
-              <p className="mt-1 text-sm text-paper/65">زوايا مهمة لم تكن في نطاق السؤال الأصلي.</p>
+              <p className="mt-1 text-sm text-paper/65">
+                زوايا مهمة غابت عن نطاق السؤال الأصلي — وليست بالضرورة أسماء عقد في الخريطة.
+              </p>
               <div className="mt-4 grid gap-3 md:grid-cols-3">
                 {example.blindSpots.map((b) => (
                   <div key={b.title} className="rounded-lg border border-paper/15 bg-paper/5 p-4">
@@ -150,6 +174,7 @@ export default function Demo() {
             </div>
           )}
 
+          {/* ٤ — الدراسة البينية */}
           {reached("study") && (
             <div className="mt-8 rounded-xl border border-copper/40 bg-copper/5 p-5 md:p-6">
               <h3 className="font-heading text-lg font-bold text-ink">٤ — من الدراسة البينية</h3>
@@ -163,7 +188,7 @@ export default function Demo() {
                   <dd className="mt-1 leading-relaxed">{example.methodology}</dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-semibold text-copper-deep">التحليلات القابلة للتنفيذ</dt>
+                  <dt className="text-sm font-semibold text-copper-deep">أنواع التحليل</dt>
                   <dd className="mt-1 flex flex-wrap gap-2">
                     {example.analyses.map((a) => (
                       <span key={a} className="rounded-full border border-copper/35 px-3 py-1 text-sm text-copper-deep">
@@ -173,7 +198,7 @@ export default function Demo() {
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-semibold text-copper-deep">بيانات يجب جمعها</dt>
+                  <dt className="text-sm font-semibold text-copper-deep">البيانات التي يجب جمعها</dt>
                   <dd className="mt-1 leading-relaxed">{example.dataNeeded}</dd>
                 </div>
                 <div>
@@ -195,16 +220,19 @@ export default function Demo() {
                     <dd className="mt-1 leading-relaxed">{example.gaps}</dd>
                   </div>
                   <div>
-                    <dt className="text-sm font-semibold text-copper-deep">درجة الثقة</dt>
+                    <dt className="text-sm font-semibold text-copper-deep">درجة الثقة — توضيحية</dt>
                     <dd className="mt-1 leading-relaxed">{example.confidence}</dd>
+                    <dd className="mt-1 text-xs text-body/60">
+                      قيمة توضيحية في هذا النموذج الثابت، وليست نتيجة حساب فعلي.
+                    </dd>
                   </div>
                 </div>
                 <div className="border-t border-copper/30 pt-4">
-                  <dt className="text-sm font-semibold text-copper-deep">الخلاصة البينية</dt>
+                  <dt className="text-sm font-semibold text-copper-deep">خلاصة بينية توضيحية</dt>
                   <dd className="mt-1 font-medium leading-relaxed text-ink">{example.synthesis}</dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-semibold text-copper-deep">المصادر (نماذج توضيحية)</dt>
+                  <dt className="text-sm font-semibold text-copper-deep">مصادر توضيحية</dt>
                   <dd className="mt-1">
                     <ul className="list-inside list-disc space-y-1 text-body/80">
                       {example.sources.map((s) => (

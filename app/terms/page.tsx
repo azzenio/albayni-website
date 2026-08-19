@@ -11,7 +11,7 @@ export default function TermsPage() {
         <Logo />
       </Link>
       <h1 className="mt-10 text-3xl font-bold">شروط الاستخدام</h1>
-      <p className="mt-2 text-sm text-body/60">نسخة أولية — يوليو 2026</p>
+      <p className="mt-2 text-sm text-body/60">نسخة أولية — أغسطس 2026</p>
       <div className="mt-8 space-y-5 leading-relaxed text-body">
         <p>
           محتوى هذا الموقع تعريفي بمشروع «البيني»، وهو مشروع في مرحلة التطوير الأولي وليس شركة مسجلة أو منتجًا
