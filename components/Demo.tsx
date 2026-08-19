@@ -4,11 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import Section from "./Section";
 import { demoDisclaimer, demoExamples, type DemoExample } from "@/content/demo";
 
-type Phase = "idle" | "analyzing" | "keywords" | "map" | "report";
+type Phase = "idle" | "running" | "understand" | "frame" | "blind" | "study";
+
+const phaseOrder: Phase[] = ["understand", "frame", "blind", "study"];
 
 /**
- * نموذج تصوري محاكي بالكامل ببيانات ثابتة — لا ذكاء اصطناعي فعليًا.
- * الاختيار من أمثلة جاهزة فقط؛ لا إدخال حر حتى لا يوهم بخدمة حقيقية.
+ * نموذج توضيحي محاكي بالكامل ببيانات ثابتة — لا يعمل خلفه النظام الفعلي.
+ * الاختيار من الأمثلة المعتمدة فقط؛ لا إدخال حر حتى لا يوهم بخدمة عاملة.
  */
 export default function Demo() {
   const [example, setExample] = useState<DemoExample>(demoExamples[0]);
@@ -21,140 +23,188 @@ export default function Demo() {
     return () => timers.current.forEach(clearTimeout);
   }, []);
 
-  const later = (fn: () => void, ms: number) => {
-    timers.current.push(setTimeout(fn, reduced.current ? 0 : ms));
-  };
-
-  const analyze = () => {
+  const clear = () => {
     timers.current.forEach(clearTimeout);
     timers.current = [];
-    setPhase("analyzing");
-    later(() => setPhase("keywords"), 1100);
-    later(() => setPhase("map"), 2100);
-    later(() => setPhase("report"), 3600);
+  };
+
+  const run = () => {
+    clear();
+    setPhase("running");
+    const delays = reduced.current ? [0, 0, 0, 0] : [900, 1900, 3000, 4200];
+    phaseOrder.forEach((p, i) => {
+      timers.current.push(setTimeout(() => setPhase(p), delays[i]));
+    });
   };
 
   const pick = (ex: DemoExample) => {
-    timers.current.forEach(clearTimeout);
+    clear();
     setExample(ex);
     setPhase("idle");
   };
 
-  const showKeywords = phase === "keywords" || phase === "map" || phase === "report";
-  const showMap = phase === "map" || phase === "report";
-  const showReport = phase === "report";
+  const reached = (p: Phase) => {
+    if (phase === "idle" || phase === "running") return false;
+    return phaseOrder.indexOf(phase) >= phaseOrder.indexOf(p);
+  };
 
   return (
     <Section id="demo" tone="sand">
-      <div className="mb-2 inline-block rounded-full bg-ink px-4 py-1.5 text-sm text-paper">
-        نموذج تصوري لتجربة «البيني»
+      <div className="mb-3 inline-block rounded-full bg-ink px-4 py-1.5 text-sm text-paper">
+        نموذج توضيحي لتجربة «البيني»
       </div>
-      <h2 className="text-2xl font-bold md:text-4xl">جرّب الفكرة قبل أن تُبنى</h2>
-      <p className="mt-3 max-w-2xl text-body/80">{demoDisclaimer}</p>
+      <h2 className="text-2xl font-bold md:text-4xl">ثلاثة أمثلة تشرح الفكرة</h2>
+      <p className="mt-3 max-w-3xl text-body/80">{demoDisclaimer}</p>
 
       <div className="mt-8 rounded-card border border-line bg-paper p-5 shadow-sm md:p-8">
-        {/* اختيار المثال */}
         <fieldset>
-          <legend className="mb-3 text-sm font-semibold text-ink">اختر موضوعًا من الأمثلة الجاهزة</legend>
-          <div className="flex flex-col gap-2">
+          <legend className="mb-3 text-sm font-semibold text-ink">اختر مسألة من الأمثلة المعتمدة</legend>
+          <div className="grid gap-2 md:grid-cols-3">
             {demoExamples.map((ex) => (
               <label
                 key={ex.id}
-                className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-colors ${
+                className={`flex cursor-pointer flex-col gap-1 rounded-xl border p-4 transition-colors ${
                   example.id === ex.id ? "border-copper bg-copper/5" : "border-line hover:border-ink/30"
                 }`}
               >
-                <input
-                  type="radio"
-                  name="demo-example"
-                  className="mt-1.5 accent-[#B0662C]"
-                  checked={example.id === ex.id}
-                  onChange={() => pick(ex)}
-                />
-                <span>
-                  <span className="block font-medium text-ink">{ex.title}</span>
-                  <span className="mt-0.5 block text-sm text-body/70">التخصص الأساسي: {ex.primary}</span>
+                <span className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="demo-example"
+                    className="accent-[#B0662C]"
+                    checked={example.id === ex.id}
+                    onChange={() => pick(ex)}
+                  />
+                  <span className="text-xs font-medium text-copper-deep">{ex.label}</span>
                 </span>
+                <span className="font-semibold text-ink">{ex.title}</span>
+                <span className="text-sm leading-relaxed text-body/70">{ex.question}</span>
               </label>
             ))}
           </div>
         </fieldset>
 
-        <button
-          onClick={analyze}
-          disabled={phase === "analyzing"}
-          className="mt-6 rounded-full bg-copper px-8 py-3 font-medium text-paper transition-colors hover:bg-copper-deep disabled:opacity-60"
-        >
-          {phase === "analyzing" ? "جارٍ التحليل التوضيحي…" : "حلّل الموضوع"}
-        </button>
+        <div className="mt-5 flex flex-wrap items-center gap-4">
+          <button
+            onClick={run}
+            disabled={phase === "running"}
+            className="rounded-full bg-copper px-8 py-3 font-medium text-paper transition-colors hover:bg-copper-deep disabled:opacity-60"
+          >
+            {phase === "running" ? "جارٍ العرض التوضيحي…" : "ابنِ الإطار البيني"}
+          </button>
+          <span className="text-sm text-body/60">التخصص المُدخَل: {example.entry}</span>
+        </div>
 
-        {/* حالة التحليل */}
         <div aria-live="polite">
-          {phase === "analyzing" && (
+          {phase === "running" && (
             <div className="mt-6 flex items-center gap-3 text-body/70">
               <span className="h-2 w-2 animate-pulse rounded-full bg-copper" aria-hidden="true" />
               <span className="h-2 w-2 animate-pulse rounded-full bg-copper [animation-delay:150ms]" aria-hidden="true" />
               <span className="h-2 w-2 animate-pulse rounded-full bg-copper [animation-delay:300ms]" aria-hidden="true" />
-              <span>يُقرأ الموضوع وتُستخرج المفاهيم…</span>
+              <span>يُقرأ نص المسألة وتُستخرج المفاهيم…</span>
             </div>
           )}
 
-          {/* المرحلة 1: المفاهيم */}
-          {showKeywords && (
+          {reached("understand") && (
             <div className="mt-8">
-              <h3 className="text-sm font-semibold text-copper-deep">المفاهيم المستخرجة</h3>
+              <h3 className="text-sm font-semibold text-copper-deep">١ — فهم المسألة</h3>
               <ul className="mt-3 flex flex-wrap gap-2">
-                {example.keywords.map((k) => (
-                  <li key={k} className="rounded-full bg-sand px-4 py-1.5 text-sm text-ink">
-                    {k}
+                {example.concepts.map((c) => (
+                  <li key={c} className="rounded-full bg-sand px-4 py-1.5 text-sm text-ink">
+                    {c}
                   </li>
                 ))}
               </ul>
             </div>
           )}
 
-          {/* المرحلة 2: خريطة التخصصات */}
-          {showMap && (
+          {reached("frame") && (
             <div className="mt-8">
-              <h3 className="text-sm font-semibold text-copper-deep">خريطة التخصصات المقترحة</h3>
+              <h3 className="text-sm font-semibold text-copper-deep">٢ — الإطار البيني: الركائز المنتقاة</h3>
               <div className="mt-3 grid gap-3 md:grid-cols-2">
-                <div className="rounded-xl border border-ink/40 bg-ink p-4 text-paper">
-                  <span className="text-xs text-paper/60">التخصص الأساسي</span>
-                  <p className="mt-1 font-semibold">{example.primary}</p>
-                </div>
-                {example.disciplines.map((d) => (
-                  <div key={d.name} className="rounded-xl border border-line bg-paper p-4">
-                    <p className="font-semibold text-ink">{d.name}</p>
-                    <p className="mt-1 text-sm leading-relaxed text-body/80">{d.reason}</p>
+                {example.pillars.map((p) => (
+                  <div key={p.name} className="rounded-xl border border-line bg-paper p-4">
+                    <div className="flex flex-wrap items-baseline gap-2">
+                      <span className="font-semibold text-ink">{p.name}</span>
+                      {p.field && <span className="text-xs text-body/55">← {p.field}</span>}
+                    </div>
+                    <p className="mt-1.5 text-sm leading-relaxed text-body/80">{p.reason}</p>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          {/* المرحلة 3: عينة التقرير */}
-          {showReport && (
+          {reached("blind") && (
+            <div className="mt-8 rounded-xl border-r-4 border-copper bg-ink p-5 md:p-6">
+              <h3 className="font-heading text-lg font-bold text-paper">٣ — النقاط العمياء</h3>
+              <p className="mt-1 text-sm text-paper/65">زوايا مهمة لم تكن في نطاق السؤال الأصلي.</p>
+              <div className="mt-4 grid gap-3 md:grid-cols-3">
+                {example.blindSpots.map((b) => (
+                  <div key={b.title} className="rounded-lg border border-paper/15 bg-paper/5 p-4">
+                    <p className="font-semibold text-copper">{b.title}</p>
+                    <p className="mt-1.5 text-sm leading-relaxed text-paper/75">{b.text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {reached("study") && (
             <div className="mt-8 rounded-xl border border-copper/40 bg-copper/5 p-5 md:p-6">
-              <h3 className="font-heading text-lg font-bold text-ink">عينة من الإطار البيني</h3>
+              <h3 className="font-heading text-lg font-bold text-ink">٤ — من الدراسة البينية</h3>
               <dl className="mt-4 space-y-4">
                 <div>
-                  <dt className="text-sm font-semibold text-copper-deep">سؤال محسّن</dt>
-                  <dd className="mt-1 leading-relaxed">{example.refinedQuestion}</dd>
+                  <dt className="text-sm font-semibold text-copper-deep">السؤال بعد التأطير</dt>
+                  <dd className="mt-1 leading-relaxed">{example.frameQuestion}</dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-semibold text-copper-deep">منهجية مقترحة</dt>
+                  <dt className="text-sm font-semibold text-copper-deep">المنهجية المقترحة</dt>
                   <dd className="mt-1 leading-relaxed">{example.methodology}</dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-semibold text-copper-deep">فجوة معرفية</dt>
-                  <dd className="mt-1 leading-relaxed">{example.gap}</dd>
+                  <dt className="text-sm font-semibold text-copper-deep">التحليلات القابلة للتنفيذ</dt>
+                  <dd className="mt-1 flex flex-wrap gap-2">
+                    {example.analyses.map((a) => (
+                      <span key={a} className="rounded-full border border-copper/35 px-3 py-1 text-sm text-copper-deep">
+                        {a}
+                      </span>
+                    ))}
+                  </dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-semibold text-copper-deep">تحذير منهجي</dt>
-                  <dd className="mt-1 leading-relaxed">{example.warning}</dd>
+                  <dt className="text-sm font-semibold text-copper-deep">بيانات يجب جمعها</dt>
+                  <dd className="mt-1 leading-relaxed">{example.dataNeeded}</dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-semibold text-copper-deep">مصادر (نماذج توضيحية)</dt>
+                  <dt className="text-sm font-semibold text-copper-deep">التقاطعات البينية</dt>
+                  <dd className="mt-1">
+                    <ul className="space-y-1.5">
+                      {example.crossings.map((c) => (
+                        <li key={c} className="flex items-start gap-2.5">
+                          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-copper" aria-hidden="true" />
+                          <span className="leading-relaxed">{c}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </dd>
+                </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div>
+                    <dt className="text-sm font-semibold text-copper-deep">فجوة الأدلة</dt>
+                    <dd className="mt-1 leading-relaxed">{example.gaps}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-sm font-semibold text-copper-deep">درجة الثقة</dt>
+                    <dd className="mt-1 leading-relaxed">{example.confidence}</dd>
+                  </div>
+                </div>
+                <div className="border-t border-copper/30 pt-4">
+                  <dt className="text-sm font-semibold text-copper-deep">الخلاصة البينية</dt>
+                  <dd className="mt-1 font-medium leading-relaxed text-ink">{example.synthesis}</dd>
+                </div>
+                <div>
+                  <dt className="text-sm font-semibold text-copper-deep">المصادر (نماذج توضيحية)</dt>
                   <dd className="mt-1">
                     <ul className="list-inside list-disc space-y-1 text-body/80">
                       {example.sources.map((s) => (
@@ -163,14 +213,10 @@ export default function Demo() {
                     </ul>
                   </dd>
                 </div>
-                <div>
-                  <dt className="text-sm font-semibold text-copper-deep">مستوى الثقة</dt>
-                  <dd className="mt-1 leading-relaxed">{example.confidence}</dd>
-                </div>
               </dl>
               <p className="mt-5 border-t border-copper/30 pt-4 text-sm text-body/70">
-                هذه العينة معدة مسبقًا لأغراض العرض. في المنصة المستقبلية تُبنى المخرجات من مصادر حقيقية قابلة
-                للتتبع، وتبقى خاضعة لمراجعة الباحث وحكمه.
+                هذه المخرجات معدة مسبقًا لأغراض العرض. في المنصة المستقبلية تُبنى من مصادر حقيقية قابلة للتتبع،
+                وتبقى خاضعة لمراجعة الباحث وقراره.
               </p>
             </div>
           )}

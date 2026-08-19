@@ -14,14 +14,17 @@ export default function ArabicFirst() {
           </p>
         </Reveal>
         <Reveal delay={120}>
-          <svg viewBox="0 0 320 220" className="mx-auto w-full max-w-sm" role="img" aria-label="طبقات معرفية عربية تتصل ببعضها">
-            <rect x="40" y="30" width="240" height="44" rx="10" fill="#EDE4D3" />
-            <rect x="60" y="88" width="200" height="44" rx="10" fill="#E0D4BD" />
-            <rect x="80" y="146" width="160" height="44" rx="10" fill="#B0662C" opacity="0.85" />
-            <text x="160" y="58" textAnchor="middle" fontSize="15" fill="#1C2430" fontFamily="var(--font-body)">الأبحاث والرسائل المفتوحة</text>
-            <text x="160" y="116" textAnchor="middle" fontSize="15" fill="#1C2430" fontFamily="var(--font-body)">التقارير والمجلات العربية</text>
-            <text x="160" y="174" textAnchor="middle" fontSize="15" fill="#FAF6EE" fontFamily="var(--font-body)">المحتوى الثقافي والتراثي المرخص</text>
-          </svg>
+          <ul className="space-y-3">
+            {arabicFirst.layers.map((l, i) => (
+              <li
+                key={l}
+                className="rounded-card p-4 text-ink"
+                style={{ background: ["#EDE4D3", "#E7DCC8", "#E0D4BD", "#D8CDB8"][i] }}
+              >
+                {l}
+              </li>
+            ))}
+          </ul>
         </Reveal>
       </div>
     </Section>

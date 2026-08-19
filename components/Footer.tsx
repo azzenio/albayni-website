@@ -26,16 +26,8 @@ export default function Footer() {
           <h3 className="text-sm font-semibold text-ink">تواصل</h3>
           <p className="mt-3 text-sm text-body/80">{site.email}</p>
           <ul className="mt-4 space-y-2">
-            <li>
-              <a href="/privacy" className="text-sm text-body/80 hover:text-copper-deep">
-                سياسة الخصوصية
-              </a>
-            </li>
-            <li>
-              <a href="/terms" className="text-sm text-body/80 hover:text-copper-deep">
-                شروط الاستخدام
-              </a>
-            </li>
+            <li><a href="/privacy" className="text-sm text-body/80 hover:text-copper-deep">سياسة الخصوصية</a></li>
+            <li><a href="/terms" className="text-sm text-body/80 hover:text-copper-deep">شروط الاستخدام</a></li>
           </ul>
         </div>
       </div>
