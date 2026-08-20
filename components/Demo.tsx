@@ -220,14 +220,27 @@ export default function Demo() {
                     <dd className="mt-1 leading-relaxed">{example.gaps}</dd>
                   </div>
                   <div>
-                    <dt className="text-sm font-semibold text-copper-deep">درجة الثقة — توضيحية</dt>
-                    <dd className="mt-1 leading-relaxed">{example.confidence}</dd>
+                    <dt className="text-sm font-semibold text-copper-deep">درجة الصلة — توضيحية</dt>
+                    <dd className="mt-1 leading-relaxed">{example.relevance}</dd>
                     <dd className="mt-1 text-xs text-body/60">
                       قيمة توضيحية في هذا النموذج الثابت، وليست نتيجة حساب فعلي.
                     </dd>
                   </div>
                 </div>
                 <div className="border-t border-copper/30 pt-4">
+                  <dt className="text-sm font-semibold text-copper-deep">المخرج البيني — توضيحي</dt>
+                  <dd className="mt-1">
+                    <ul className="space-y-1.5">
+                      {example.outcomes.map((o) => (
+                        <li key={o} className="flex items-start gap-2.5">
+                          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-copper" aria-hidden="true" />
+                          <span className="leading-relaxed">{o}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </dd>
+                </div>
+                <div>
                   <dt className="text-sm font-semibold text-copper-deep">خلاصة بينية توضيحية</dt>
                   <dd className="mt-1 font-medium leading-relaxed text-ink">{example.synthesis}</dd>
                 </div>

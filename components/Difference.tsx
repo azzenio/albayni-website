@@ -9,7 +9,7 @@ export default function Difference() {
         <h2 className="text-2xl font-bold md:text-4xl">{difference.title}</h2>
       </Reveal>
       <Reveal delay={100}>
-        <div className="mt-8 grid gap-5 md:grid-cols-2">
+        <div className="mt-8 grid items-start gap-5 md:grid-cols-2">
           <div className="rounded-card border border-line bg-sand/40 p-6">
             <h3 className="mb-4 text-lg font-semibold text-ink/70">{difference.general.title}</h3>
             <ul className="space-y-2.5">
